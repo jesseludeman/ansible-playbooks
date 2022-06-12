@@ -1,0 +1,24 @@
+---
+- name: Install Google Chrome on Windows systems
+  gather_facts: false
+  become: false
+  hosts: servers
+  vars_files: vars.yml
+  tasks:
+    - name: Download Chrome from S3
+      aws_s3:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        bucket: jesse-test-bucket-01
+        object: googlechromestandaloneenterprise64.msi
+        dest: googlechromestandaloneenterprise64.msi
+        mode: get
+      delegate_to: localhost
+
+    - name: Upload installer to remote host
+      win_copy:
+        src: "googlechromestandaloneenterprise64.msi"
+        dest: "C:\\temp\\googlechromestandaloneenterprise64.msi"
+
+    - name: Install Chrome
+      win_shell: msiexec /i C:\temp\googlechromestandaloneenterprise64.msi /qn /norestart
