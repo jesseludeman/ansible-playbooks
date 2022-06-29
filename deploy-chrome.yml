@@ -9,11 +9,16 @@
       aws_s3:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
-        bucket: jesse-test-bucket-01
+        bucket: bucket_name
         object: googlechromestandaloneenterprise64.msi
         dest: googlechromestandaloneenterprise64.msi
         mode: get
       delegate_to: localhost
+
+    - name: Check if temp directory exists on remote host
+      win_file:
+        path: C:\temp
+        state: directory
 
     - name: Upload installer to remote host
       win_copy:
